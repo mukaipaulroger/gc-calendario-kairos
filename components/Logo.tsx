@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface LogoProps {
@@ -22,7 +23,7 @@ const Logo: React.FC<LogoProps> = ({ className = "h-12 w-12" }) => {
         fontSize="75"
         fontWeight="700"
       >
-        gc
+        Gc
       </text>
     </svg>
   );

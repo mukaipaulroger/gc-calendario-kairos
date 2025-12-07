@@ -103,7 +103,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, t, language, setLang
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
-                  placeholder={activeTab === 'viewer' ? "+81 090-1354-5731" : "seu.nome@empresa.com"}
+                  placeholder={activeTab === 'viewer' ? "81 0X0-1234-5678" : "seu.nome@empresa.com"}
                 />
               </div>
             </div>
