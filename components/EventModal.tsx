@@ -16,7 +16,7 @@ interface EventModalProps {
   currentUser: User;
   onSave: (title: string, description: string, type: EventType) => void;
   events: CalendarEvent[];
-  t: (key: string) => string;
+  t: (key: string) => any;
   locale: Locale;
 }
 
@@ -45,7 +45,8 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, selectedDate, 
     if (!description.trim()) return;
     setIsEnhancing(true);
     try {
-      const enhanced = await enhanceAnnouncement(description, type);
+      // Pass the current locale code to ensure enhancement is in the correct language
+      const enhanced = await enhanceAnnouncement(description, type, locale.code || 'pt-BR');
       setDescription(enhanced);
     } catch (e) {
       console.error(e);

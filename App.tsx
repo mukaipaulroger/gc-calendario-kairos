@@ -222,7 +222,8 @@ const App: React.FC = () => {
   const handleSuggestEvents = async () => {
       setIsSuggesting(true);
       const monthName = format(currentDate, 'MMMM yyyy', { locale: localeMap[language] });
-      const suggestions = await suggestEvents(monthName);
+      // Pass the current language code to the API
+      const suggestions = await suggestEvents(monthName, localeMap[language].code || 'pt-BR');
       
       if (suggestions.length > 0) {
           const newEvents: CalendarEvent[] = suggestions.map((s, idx) => ({

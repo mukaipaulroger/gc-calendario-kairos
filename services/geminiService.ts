@@ -1,23 +1,23 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-export const enhanceAnnouncement = async (text: string, type: string): Promise<string> => {
+export const enhanceAnnouncement = async (text: string, type: string, langCode: string = 'pt-BR'): Promise<string> => {
   try {
     const model = 'gemini-2.5-flash';
     const prompt = `
-      Você é um assistente de comunicação corporativa.
-      Melhore o seguinte texto para um quadro de avisos ou calendário compartilhado.
-      O tipo da mensagem é: ${type}.
+      You are a corporate communication assistant.
+      Enhance the following text for a shared calendar/notice board.
+      Message Type: ${type}.
+      Target Language: ${langCode} (Translate/Adapt if necessary).
       
-      Texto original: "${text}"
+      Original Text: "${text}"
 
-      Requisitos:
-      - Mantenha o tom profissional mas amigável.
-      - Corrija erros gramaticais.
-      - Seja conciso (máximo de 3 frases).
-      - Retorne APENAS o texto melhorado, sem aspas ou explicações adicionais.
-      - O idioma deve ser Português do Brasil.
+      Requirements:
+      - Keep it professional but friendly.
+      - Fix grammar errors.
+      - Be concise (max 3 sentences).
+      - Output ONLY the enhanced text in ${langCode}, no quotes or extra explanations.
     `;
 
     const response = await ai.models.generateContent({
@@ -32,19 +32,30 @@ export const enhanceAnnouncement = async (text: string, type: string): Promise<s
   }
 };
 
-export const suggestEvents = async (dateContext: string): Promise<{ title: string; description: string }[]> => {
+export const suggestEvents = async (dateContext: string, langCode: string = 'pt-BR'): Promise<{ title: string; description: string }[]> => {
   try {
       const prompt = `
-        Gere 3 sugestões de eventos corporativos fictícios curtos e criativos para o mês de ${dateContext}.
-        Retorne estritamente um JSON array.
-        Exemplo: [{"title": "Café da Manhã", "description": "Reunião mensal de alinhamento."}]
+        Generate 3 fictitious corporate events for the month of ${dateContext}.
+        Language: ${langCode}.
+        Be creative and concise.
       `;
       
       const response = await ai.models.generateContent({
           model: 'gemini-2.5-flash',
           contents: prompt,
           config: {
-              responseMimeType: 'application/json'
+              responseMimeType: 'application/json',
+              responseSchema: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    title: { type: Type.STRING },
+                    description: { type: Type.STRING }
+                  },
+                  required: ['title', 'description']
+                }
+              }
           }
       });
       
