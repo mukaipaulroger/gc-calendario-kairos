@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { User, UserRole } from '../types';
 import Button from './Button';
@@ -34,8 +35,18 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, currentUse
   if (!isOpen) return null;
 
   const handleRandomizeAvatar = () => {
-    const randomId = Math.floor(Math.random() * 1000);
-    setAvatarUrl(`https://picsum.photos/seed/${randomId}/150/150`);
+    // List of biblical themes/characters to generate avatars
+    const biblicalThemes = [
+      'Moses', 'David', 'Esther', 'Ruth', 'Paul', 'Peter', 'Mary', 'Noah', 
+      'Daniel', 'Joseph', 'Deborah', 'Samuel', 'Elijah', 'Sarah', 'Joshua',
+      'Biblical shepherd', 'Biblical scribe', 'Biblical fisherman'
+    ];
+    
+    const randomTheme = biblicalThemes[Math.floor(Math.random() * biblicalThemes.length)];
+    const randomSeed = Math.floor(Math.random() * 1000);
+    
+    // Using Pollinations.ai for dynamic image generation
+    setAvatarUrl(`https://image.pollinations.ai/prompt/classical%20art%20oil%20painting%20portrait%20of%20biblical%20character%20${randomTheme}?width=250&height=250&nologo=true&seed=${randomSeed}`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -62,7 +73,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, currentUse
             <UserIcon className="text-yellow-500" size={20} />
             {t('profileModal.title')}
           </h3>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-300">
+          <button type="button" onClick={onClose} className="text-gray-500 hover:text-gray-300">
             <X size={24} />
           </button>
         </div>

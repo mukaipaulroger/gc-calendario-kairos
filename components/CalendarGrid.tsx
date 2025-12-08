@@ -1,11 +1,12 @@
 
 import React from 'react';
-import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, isToday } from 'date-fns';
+import { format, endOfMonth, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, isToday } from 'date-fns';
+import startOfMonth from 'date-fns/startOfMonth';
+import startOfWeek from 'date-fns/startOfWeek';
 import { CalendarEvent, User, UserRole } from '../types';
 import { EVENT_COLORS } from '../constants';
 import { Plus, Eye } from 'lucide-react';
 import Avatar from './Avatar';
-import { Locale } from 'date-fns';
 
 interface CalendarGridProps {
   currentDate: Date;
@@ -14,7 +15,7 @@ interface CalendarGridProps {
   onDateClick: (date: Date) => void;
   userRole: UserRole;
   t: (key: string) => string;
-  locale: Locale;
+  locale: any;
 }
 
 const CalendarGrid: React.FC<CalendarGridProps> = ({ currentDate, events, users, onDateClick, userRole, t, locale }) => {

@@ -7,7 +7,6 @@ import { enhanceAnnouncement, translateContent } from '../services/geminiService
 import { X, Sparkles, AlertCircle, Calendar, Languages, Loader2 } from 'lucide-react';
 import { isSameDay, format } from 'date-fns';
 import { EVENT_COLORS, EVENT_LABELS } from '../constants';
-import { Locale } from 'date-fns';
 
 interface EventModalProps {
   isOpen: boolean;
@@ -17,7 +16,7 @@ interface EventModalProps {
   onSave: (title: string, description: string, type: EventType) => void;
   events: CalendarEvent[];
   t: (key: string) => string;
-  locale: Locale;
+  locale: any;
 }
 
 const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, selectedDate, currentUser, onSave, events, t, locale }) => {
