@@ -1,4 +1,3 @@
-
 import { Language } from './types';
 
 export const TRANSLATIONS: Record<Language, any> = {
@@ -17,7 +16,7 @@ export const TRANSLATIONS: Record<Language, any> = {
     login: {
       headerSub: 'Calendário',
       tabViewer: 'Visualizador',
-      tabAdmin: 'Administração',
+      tabAdmin: 'Membro / Admin',
       viewerTitle: 'Acesso Rápido',
       viewerDesc: 'Digite seu celular para visualizar o calendário.',
       adminTitle: 'Área Restrita',
@@ -85,17 +84,6 @@ export const TRANSLATIONS: Record<Language, any> = {
       title: 'Últimas Atualizações',
       empty: 'Nenhuma notícia ainda.'
     },
-    contact: {
-      title: 'Fale Conosco',
-      editTitle: 'Gerenciar Contatos',
-      phone: 'Telefone',
-      email: 'E-mail',
-      instagram: 'Instagram',
-      btnSave: 'Salvar',
-      btnCancel: 'Cancelar',
-      promptPass: 'Digite a senha de administrador:',
-      errorPass: 'Senha incorreta.'
-    },
     moderator: {
       title: 'Painel Administrativo',
       tabAccess: 'Moderação',
@@ -129,7 +117,7 @@ export const TRANSLATIONS: Record<Language, any> = {
     login: {
       headerSub: 'カレンダー',
       tabViewer: '閲覧者 (電話)',
-      tabAdmin: '管理部門',
+      tabAdmin: 'メンバー / 管理者',
       viewerTitle: 'クイックアクセス',
       viewerDesc: 'カレンダーを表示するには携帯電話番号を入力してください。',
       adminTitle: 'メンバーエリア',
@@ -197,17 +185,6 @@ export const TRANSLATIONS: Record<Language, any> = {
       title: '最新の更新',
       empty: 'ニュースはまだありません。'
     },
-    contact: {
-      title: 'お問い合わせ',
-      editTitle: '連絡先の管理',
-      phone: '電話番号',
-      email: 'メールアドレス',
-      instagram: 'インスタグラム',
-      btnSave: '保存',
-      btnCancel: 'キャンセル',
-      promptPass: '管理者パスワードを入力してください:',
-      errorPass: 'パスワードが間違っています。'
-    },
     moderator: {
       title: '管理パネル',
       tabAccess: '承認管理',
@@ -241,7 +218,7 @@ export const TRANSLATIONS: Record<Language, any> = {
     login: {
       headerSub: 'Calendar',
       tabViewer: 'Viewer',
-      tabAdmin: 'Administration',
+      tabAdmin: 'Member / Admin',
       viewerTitle: 'Quick Access',
       viewerDesc: 'Enter your phone number to view the calendar.',
       adminTitle: 'Restricted Area',
@@ -309,17 +286,6 @@ export const TRANSLATIONS: Record<Language, any> = {
       title: 'Latest Updates',
       empty: 'No news yet.'
     },
-    contact: {
-      title: 'Contact Us',
-      editTitle: 'Manage Contacts',
-      phone: 'Phone',
-      email: 'Email',
-      instagram: 'Instagram',
-      btnSave: 'Save',
-      btnCancel: 'Cancel',
-      promptPass: 'Enter admin password:',
-      errorPass: 'Incorrect password.'
-    },
     moderator: {
       title: 'Admin Panel',
       tabAccess: 'Moderation',
@@ -353,7 +319,7 @@ export const TRANSLATIONS: Record<Language, any> = {
     login: {
       headerSub: 'Calendario',
       tabViewer: 'Visualizador',
-      tabAdmin: 'Administración',
+      tabAdmin: 'Miembro / Admin',
       viewerTitle: 'Acceso Rápido',
       viewerDesc: 'Ingrese su celular para ver el calendario.',
       adminTitle: 'Área Restringida',
@@ -420,17 +386,6 @@ export const TRANSLATIONS: Record<Language, any> = {
     newsList: {
       title: 'Últimas Actualizaciones',
       empty: 'Ninguna noticia aún.'
-    },
-    contact: {
-      title: 'Contáctenos',
-      editTitle: 'Administrar Contactos',
-      phone: 'Teléfono',
-      email: 'E-mail',
-      instagram: 'Instagram',
-      btnSave: 'Guardar',
-      btnCancel: 'Cancelar',
-      promptPass: 'Ingrese la contraseña de administrador:',
-      errorPass: 'Contraseña incorrecta.'
     },
     moderator: {
       title: 'Panel Administrativo',

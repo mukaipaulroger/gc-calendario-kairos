@@ -57,9 +57,3 @@ export interface DayData {
   isToday: boolean;
   events: CalendarEvent[];
 }
-
-export interface ContactInfo {
-  phone: string;
-  email: string;
-  instagram: string;
-}

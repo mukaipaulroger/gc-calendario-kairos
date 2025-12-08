@@ -1,13 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import { addMonths, format } from 'date-fns';
-import subMonths from 'date-fns/subMonths';
-import ptBR from 'date-fns/locale/pt-BR';
-import ja from 'date-fns/locale/ja';
-import enUS from 'date-fns/locale/en-US';
-import es from 'date-fns/locale/es';
-import { CalendarEvent, User, EventType, UserRole, PrayerRequest, ContactMethod, Language, ContactInfo } from './types';
-import { USERS, DEFAULT_CONTACT_INFO } from './constants';
+import { addMonths, subMonths, format } from 'date-fns';
+import { ptBR, ja, enUS, es } from 'date-fns/locale';
+import { CalendarEvent, User, EventType, UserRole, PrayerRequest, ContactMethod, Language } from './types';
+import { USERS } from './constants';
 import { TRANSLATIONS } from './translations';
 import CalendarGrid from './components/CalendarGrid';
 import EventModal from './components/EventModal';
@@ -18,10 +14,7 @@ import LoginScreen from './components/LoginScreen';
 import ModeratorPanel from './components/ModeratorPanel';
 import ProfileModal from './components/ProfileModal';
 import PrayerModal from './components/PrayerModal';
-import ContactCard from './components/ContactCard';
-import ContactSettingsModal from './components/ContactSettingsModal';
 import Logo from './components/Logo';
-import DailyVerse from './components/DailyVerse';
 import { ChevronLeft, ChevronRight, LogOut, ShieldAlert, Heart } from 'lucide-react';
 import { suggestEvents } from './services/geminiService';
 
@@ -58,11 +51,9 @@ const App: React.FC = () => {
   const [isModeratorPanelOpen, setIsModeratorPanelOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isPrayerModalOpen, setIsPrayerModalOpen] = useState(false);
-  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [prayerRequests, setPrayerRequests] = useState<PrayerRequest[]>([]);
-  const [contactInfo, setContactInfo] = useState<ContactInfo>(DEFAULT_CONTACT_INFO);
   const [isSuggesting, setIsSuggesting] = useState(false);
 
   // Initialize with dummy events
@@ -248,26 +239,6 @@ const App: React.FC = () => {
       setIsSuggesting(false);
   };
 
-  const handleUpdateContactInfo = (newInfo: ContactInfo) => {
-    setContactInfo(newInfo);
-  };
-
-  const handleContactEdit = () => {
-    if (isSuperAdmin) {
-      setIsContactModalOpen(true);
-      return;
-    }
-
-    if (isAdmin) {
-      const pwd = window.prompt(t('contact.promptPass'));
-      if (pwd === "eunaosoudaqui1") {
-        setIsContactModalOpen(true);
-      } else {
-        alert(t('contact.errorPass'));
-      }
-    }
-  };
-
   if (!currentUser) {
     return <LoginScreen onLogin={handleLogin} t={t} language={language} setLanguage={setLanguage} />;
   }
@@ -275,7 +246,6 @@ const App: React.FC = () => {
   const pendingCount = users.filter(u => u.status === 'pending' || u.requestedRole === 'admin').length;
   const newPrayersCount = prayerRequests.length;
   const isAdmin = currentUser.role === 'admin';
-  const isSuperAdmin = currentUser.email === 'pr.mukai@gmail.com';
   const canEdit = currentUser.role === 'admin' || currentUser.role === 'editor';
 
   return (
@@ -402,21 +372,8 @@ const App: React.FC = () => {
           </div>
 
           {/* Sidebar News Feed */}
-          <div className="w-full lg:w-96 flex-shrink-0 lg:h-full h-auto flex flex-col gap-4">
-             {/* Daily Verse Component */}
-             <DailyVerse language={language} />
-             
-             <div className="flex-1 min-h-0">
-                <NewsList events={events} users={users} t={t} locale={localeMap[language]} />
-             </div>
-
-             {/* Contact Info Card */}
-             <ContactCard 
-               contactInfo={contactInfo}
-               onEdit={handleContactEdit}
-               canEdit={isAdmin}
-               t={t}
-             />
+          <div className="w-full lg:w-96 flex-shrink-0 lg:h-full h-auto">
+             <NewsList events={events} users={users} t={t} locale={localeMap[language]} />
           </div>
 
         </div>
@@ -447,14 +404,6 @@ const App: React.FC = () => {
         onClose={() => setIsPrayerModalOpen(false)}
         currentUser={currentUser}
         onSend={handleSendPrayer}
-        t={t}
-      />
-
-      <ContactSettingsModal 
-        isOpen={isContactModalOpen}
-        onClose={() => setIsContactModalOpen(false)}
-        contactInfo={contactInfo}
-        onSave={handleUpdateContactInfo}
         t={t}
       />
 

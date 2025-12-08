@@ -5,6 +5,7 @@ import Avatar from './Avatar';
 import Button from './Button';
 import { X, Check, Shield, Eye, Heart, BarChart2, User as UserIcon, EyeOff, MessageCircle, Mail, Phone, Smartphone, AlertTriangle, Languages, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
+import { Locale } from 'date-fns';
 import { translateContent } from '../services/geminiService';
 
 interface ModeratorPanelProps {
@@ -16,7 +17,7 @@ interface ModeratorPanelProps {
   onApprove: (userId: string, role: UserRole) => void;
   onReject: (userId: string) => void;
   t: (key: string) => string;
-  locale: any;
+  locale: Locale;
 }
 
 const ModeratorPanel: React.FC<ModeratorPanelProps> = ({ 
