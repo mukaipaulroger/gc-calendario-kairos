@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { User, UserRole } from '../types';
 import Button from './Button';
 import Avatar from './Avatar';
-import { X, User as UserIcon, MapPin, Calendar, RefreshCw, CheckCircle, Shield } from 'lucide-react';
+import { X, User as UserIcon, MapPin, Calendar, RefreshCw, CheckCircle, Shield, Mail } from 'lucide-react';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -16,6 +16,7 @@ interface ProfileModalProps {
 
 const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, currentUser, onSave, onRequestRole, t }) => {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [age, setAge] = useState('');
   const [city, setCity] = useState('');
   const [isGCMember, setIsGCMember] = useState(false);
@@ -24,6 +25,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, currentUse
   useEffect(() => {
     if (isOpen && currentUser) {
       setName(currentUser.name);
+      setEmail(currentUser.email || '');
       setAge(currentUser.age || '');
       setCity(currentUser.city || '');
       setIsGCMember(currentUser.isGCMember || false);
@@ -43,6 +45,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, currentUse
     const updatedUser: User = {
       ...currentUser,
       name,
+      email,
       age,
       city,
       isGCMember,
@@ -96,6 +99,20 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, currentUse
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none"
                 required
+              />
+            </div>
+
+            {/* Email Field - Added Here */}
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center gap-1">
+                <Mail size={14} /> {t('profileModal.labelEmail')}
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none placeholder-gray-500"
+                placeholder="exemplo@email.com"
               />
             </div>
 

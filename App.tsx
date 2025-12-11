@@ -15,8 +15,10 @@ import LoginScreen from './components/LoginScreen';
 import ModeratorPanel from './components/ModeratorPanel';
 import ProfileModal from './components/ProfileModal';
 import PrayerModal from './components/PrayerModal';
+import ContactInfoBox from './components/ContactInfoBox';
 import { ChevronLeft, ChevronRight, LogOut, ShieldAlert, Heart } from 'lucide-react';
 import { suggestEvents } from './services/geminiService';
+import Logo from './components/Logo';
 
 const App: React.FC = () => {
   // Localization State
@@ -243,7 +245,10 @@ const App: React.FC = () => {
       <header className="bg-gray-800 border-b border-gray-700 p-3 flex items-center justify-between sticky top-0 z-40 shadow-lg">
         <div className="flex items-center gap-4">
           
-          {/* Logo "Gc" removed from here to clean up visual */}
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+             <Logo className="h-10 w-28" />
+          </div>
           
           {/* Language Selector */}
           <div className="bg-gray-900/50 p-1 rounded-lg border border-gray-700 flex gap-1">
@@ -263,14 +268,15 @@ const App: React.FC = () => {
 
         <div className="flex items-center gap-2">
             
-            {/* Prayer Request Button - Now with visible text on all screens */}
+            {/* Prayer Request Button */}
             <Button 
                variant="primary" 
                onClick={() => setIsPrayerModalOpen(true)}
                className="!rounded-full px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 border-none shadow-lg shadow-pink-900/20 flex items-center"
             >
                <Heart className="fill-white" size={20} />
-               <span className="ml-2 font-bold whitespace-nowrap">{t('app.prayerButton')}</span>
+               <span className="ml-2 font-bold whitespace-nowrap hidden sm:inline">{t('app.prayerButton')}</span>
+               <span className="ml-2 font-bold whitespace-nowrap sm:hidden">Oração</span>
             </Button>
 
             {/* Moderator Panel (If Admin/Editor) */}
@@ -308,12 +314,13 @@ const App: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         
-        {/* Sidebar (Daily Verse & News) */}
-        <aside className="w-full md:w-80 bg-gray-800/50 border-r border-gray-700 flex flex-col overflow-hidden order-2 md:order-1">
-           <div className="p-4 flex-shrink-0">
+        {/* Sidebar (Daily Verse & News & Contact) */}
+        <aside className="w-full md:w-80 bg-gray-800/50 border-r border-gray-700 flex flex-col overflow-y-auto order-2 md:order-1 scrollbar-thin scrollbar-thumb-gray-600">
+           <div className="p-4 flex-shrink-0 space-y-4">
              <DailyVerse language={language} t={t} />
+             <ContactInfoBox isAdmin={currentUser.role === 'admin'} t={t} />
            </div>
-           <div className="flex-1 overflow-hidden p-4 pt-0">
+           <div className="flex-1 p-4 pt-0">
              <NewsList events={events} users={users} t={t} locale={localeMap[language]} />
            </div>
         </aside>

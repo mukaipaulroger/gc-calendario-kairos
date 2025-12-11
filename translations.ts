@@ -14,6 +14,16 @@ export const TRANSLATIONS: Record<Language, any> = {
       },
       logout: 'Sair'
     },
+    contactBox: {
+      title: 'Nossos Contatos',
+      labelEmail: 'E-mail',
+      labelPhone: 'Telefone',
+      labelInsta: 'Instagram',
+      labelAddress: 'Endereço',
+      btnEdit: 'Editar',
+      btnSave: 'Salvar',
+      btnCancel: 'Cancelar'
+    },
     login: {
       headerSub: 'Calendário',
       tabViewer: 'Visualizador',
@@ -78,6 +88,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       title: 'Meu Perfil',
       changePhoto: 'Toque no ícone para gerar uma nova foto',
       labelName: 'Nome',
+      labelEmail: 'E-mail',
       labelAge: 'Idade',
       labelCity: 'Cidade',
       labelGCMember: 'Membro do GC',
@@ -123,6 +134,16 @@ export const TRANSLATIONS: Record<Language, any> = {
         admin: '管理者'
       },
       logout: 'ログアウト'
+    },
+    contactBox: {
+      title: 'お問い合わせ',
+      labelEmail: 'Eメール',
+      labelPhone: '電話番号',
+      labelInsta: 'Instagram',
+      labelAddress: '住所',
+      btnEdit: '編集',
+      btnSave: '保存',
+      btnCancel: 'キャンセル'
     },
     login: {
       headerSub: 'カレンダー',
@@ -188,6 +209,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       title: 'プロフィール',
       changePhoto: 'アイコンをタップして新しい写真を生成',
       labelName: '名前',
+      labelEmail: 'Eメール',
       labelAge: '年齢',
       labelCity: '都市',
       labelGCMember: 'GCメンバー',
@@ -233,6 +255,16 @@ export const TRANSLATIONS: Record<Language, any> = {
         admin: 'Admin'
       },
       logout: 'Logout'
+    },
+    contactBox: {
+      title: 'Contact Us',
+      labelEmail: 'Email',
+      labelPhone: 'Phone',
+      labelInsta: 'Instagram',
+      labelAddress: 'Address',
+      btnEdit: 'Edit',
+      btnSave: 'Save',
+      btnCancel: 'Cancel'
     },
     login: {
       headerSub: 'Calendar',
@@ -298,6 +330,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       title: 'My Profile',
       changePhoto: 'Tap icon to generate new photo',
       labelName: 'Name',
+      labelEmail: 'E-mail',
       labelAge: 'Age',
       labelCity: 'City',
       labelGCMember: 'GC Member',
@@ -343,6 +376,16 @@ export const TRANSLATIONS: Record<Language, any> = {
         admin: 'Admin'
       },
       logout: 'Salir'
+    },
+    contactBox: {
+      title: 'Nuestros Contactos',
+      labelEmail: 'E-mail',
+      labelPhone: 'Teléfono',
+      labelInsta: 'Instagram',
+      labelAddress: 'Dirección',
+      btnEdit: 'Editar',
+      btnSave: 'Guardar',
+      btnCancel: 'Cancelar'
     },
     login: {
       headerSub: 'Calendario',
@@ -408,6 +451,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       title: 'Mi Perfil',
       changePhoto: 'Toque el icono para generar nueva foto',
       labelName: 'Nombre',
+      labelEmail: 'E-mail',
       labelAge: 'Edad',
       labelCity: 'Ciudad',
       labelGCMember: 'Miembro de GC',

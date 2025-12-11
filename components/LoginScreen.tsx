@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Button from './Button';
 import { Mail, Lock, ArrowRight, Phone, Eye, Shield, User as UserIcon, X } from 'lucide-react';
 import { Language, User } from '../types';
+import Logo from './Logo';
 
 interface LoginScreenProps {
   onLogin: (value: string, type: 'email' | 'phone', extraData?: { name: string; phone: string }) => void;
@@ -74,7 +75,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, t, language, setLang
       <div className="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col ring-1 ring-yellow-600/20 relative">
         
         {/* Header Visual */}
-        <div className="bg-black p-8 text-center relative overflow-hidden border-b border-yellow-600/30 min-h-[220px] flex flex-col items-center justify-center">
+        <div className="bg-black p-8 text-center relative overflow-hidden border-b border-yellow-600/30 min-h-[250px] flex flex-col items-center justify-center">
           <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
              <div className="absolute top-[-50px] left-[-50px] w-32 h-32 rounded-full bg-yellow-600 blur-3xl"></div>
              <div className="absolute bottom-[-20px] right-[-20px] w-24 h-24 rounded-full bg-yellow-500 blur-2xl"></div>
@@ -88,28 +89,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, t, language, setLang
               <button onClick={() => setLanguage('es')} className={`text-lg hover:scale-110 transition-transform ${language === 'es' ? 'opacity-100' : 'opacity-40'}`} title="Español">🇪🇸</button>
            </div>
 
-          <div className="flex flex-col items-center justify-center relative z-10 mb-2 w-full">
-            {/* LOGO IMPLEMENTATION */}
-            {/* Tenta carregar a imagem 'logo.png' da pasta public. Se falhar, mostra o texto estilizado. */}
-            <img 
-               src="/logo.png" 
-               alt="Kairós" 
-               className="h-32 md:h-40 w-auto object-contain drop-shadow-2xl animate-fadeIn"
-               onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  const fallback = document.getElementById('logo-fallback');
-                  if (fallback) fallback.classList.remove('hidden');
-               }}
-            />
-            
-            {/* Fallback Text: Estilo Ouro Metálico sem a palavra Calendário */}
-            <h1 
-              id="logo-fallback" 
-              className="hidden font-script text-7xl md:text-8xl text-transparent bg-clip-text bg-gradient-to-br from-[#FFD700] via-[#FDB931] to-[#C6930A] drop-shadow-lg pb-4 pt-2"
-              style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.5))' }}
-            >
-              Kairós
-            </h1>
+          <div className="flex flex-col items-center justify-center relative z-10 w-full">
+            {/* COMPONENTE LOGO SVG */}
+            <Logo className="w-full max-w-[280px] h-auto animate-fadeIn drop-shadow-2xl" />
           </div>
         </div>
 
