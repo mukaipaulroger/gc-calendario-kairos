@@ -1,3 +1,4 @@
+
 import { Language } from './types';
 
 export const TRANSLATIONS: Record<Language, any> = {
@@ -16,15 +17,20 @@ export const TRANSLATIONS: Record<Language, any> = {
     login: {
       headerSub: 'Calendário',
       tabViewer: 'Visualizador',
-      tabAdmin: 'Membro / Admin',
+      tabAdmin: 'Administrativo',
       viewerTitle: 'Acesso Rápido',
       viewerDesc: 'Digite seu celular para visualizar o calendário.',
       adminTitle: 'Área Restrita',
       adminDesc: 'Login exclusivo para moderadores e editores.',
+      registerTitle: 'Solicitar Cadastro',
+      registerDesc: 'Preencha seus dados para solicitar acesso administrativo.',
       labelPhone: 'Celular',
       labelEmail: 'E-mail Corporativo',
+      labelName: 'Nome Completo',
+      labelContactPhone: 'Celular para Contato',
       btnAccess: 'Acessar Calendário',
       btnContinue: 'Continuar',
+      btnRequest: 'Solicitar Acesso',
       footerViewer: 'O modo visualizador não requer senha ou aprovação prévia.',
       footerAdmin: 'Novos e-mails entrarão automaticamente na fila de aprovação.'
     },
@@ -39,17 +45,17 @@ export const TRANSLATIONS: Record<Language, any> = {
       addTitle: 'Adicionar Novo Evento',
       fieldTitle: 'Título',
       fieldDesc: 'Mensagem',
-      placeholderTitle: 'Ex: Reunião Geral...',
+      placeholderTitle: 'Ex: Pensamento do dia...',
       placeholderDesc: 'Escreva os detalhes...',
       enhanceAI: 'Melhorar com IA',
       enhancing: 'Melhorando...',
-      urgentHelp: 'Eventos marcados como importantes serão destacados.',
+      reflectionHelp: 'Mensagens de encorajamento ou versículos.',
       btnClose: 'Fechar',
       btnPublish: 'Publicar',
       types: {
         notice: 'Avisos',
         news: 'Eventos',
-        urgent: 'Importante'
+        reflection: 'Reflexão'
       }
     },
     prayerModal: {
@@ -77,7 +83,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       labelGCMember: 'Membro do GC',
       descGCMember: 'Participa de um Grupo de Crescimento?',
       btnRequestAdmin: 'Solicitar Acesso de Moderador',
-      statusPending: 'Solicitação de Moderador Pendente',
+      statusPending: 'Solicitação de Moderador Pendiente',
       btnSave: 'Salvar Alterações'
     },
     newsList: {
@@ -100,6 +106,10 @@ export const TRANSLATIONS: Record<Language, any> = {
       tableLogins: 'Logins',
       btnApproveAdmin: 'Tornar Admin',
       btnKeep: 'Manter Atual'
+    },
+    dailyVerse: {
+      title: 'Versículo do Dia',
+      loading: 'Buscando inspiração...'
     }
   },
   jp: {
@@ -117,15 +127,20 @@ export const TRANSLATIONS: Record<Language, any> = {
     login: {
       headerSub: 'カレンダー',
       tabViewer: '閲覧者 (電話)',
-      tabAdmin: 'メンバー / 管理者',
+      tabAdmin: '管理者エリア',
       viewerTitle: 'クイックアクセス',
       viewerDesc: 'カレンダーを表示するには携帯電話番号を入力してください。',
       adminTitle: 'メンバーエリア',
       adminDesc: '管理者および編集者専用のログインです。',
+      registerTitle: '登録リクエスト',
+      registerDesc: '管理者アクセスをリクエストするには詳細を入力してください。',
       labelPhone: '携帯電話番号',
       labelEmail: 'メールアドレス',
+      labelName: '氏名',
+      labelContactPhone: '連絡先電話番号',
       btnAccess: 'カレンダーへ',
       btnContinue: '次へ',
+      btnRequest: 'アクセスをリクエスト',
       footerViewer: '閲覧モードはパスワードや事前承認が不要です。',
       footerAdmin: '新しいメールアドレスは自動的に承認待ちになります。'
     },
@@ -140,17 +155,17 @@ export const TRANSLATIONS: Record<Language, any> = {
       addTitle: '新しいイベントを追加',
       fieldTitle: 'タイトル',
       fieldDesc: 'メッセージ',
-      placeholderTitle: '例：定例会議...',
+      placeholderTitle: '例：今日の思い...',
       placeholderDesc: '詳細を入力してください...',
       enhanceAI: 'AIで改善',
       enhancing: '改善中...',
-      urgentHelp: '重要としてマークされたイベントは強調表示されます。',
+      reflectionHelp: '励ましのメッセージや聖句など。',
       btnClose: '閉じる',
       btnPublish: '公開する',
       types: {
         notice: 'お知らせ',
         news: 'イベント',
-        urgent: '重要'
+        reflection: '黙想'
       }
     },
     prayerModal: {
@@ -201,6 +216,10 @@ export const TRANSLATIONS: Record<Language, any> = {
       tableLogins: 'ログイン回数',
       btnApproveAdmin: '管理者にする',
       btnKeep: '現状維持'
+    },
+    dailyVerse: {
+      title: '今日の聖句',
+      loading: '聖句を準備中...'
     }
   },
   en: {
@@ -218,15 +237,20 @@ export const TRANSLATIONS: Record<Language, any> = {
     login: {
       headerSub: 'Calendar',
       tabViewer: 'Viewer',
-      tabAdmin: 'Member / Admin',
+      tabAdmin: 'Admin Area',
       viewerTitle: 'Quick Access',
       viewerDesc: 'Enter your phone number to view the calendar.',
       adminTitle: 'Restricted Area',
       adminDesc: 'Login for moderators and editors only.',
+      registerTitle: 'Registration Request',
+      registerDesc: 'Fill in your details to request admin access.',
       labelPhone: 'Phone Number',
       labelEmail: 'Corporate Email',
+      labelName: 'Full Name',
+      labelContactPhone: 'Contact Phone',
       btnAccess: 'Access Calendar',
       btnContinue: 'Continue',
+      btnRequest: 'Request Access',
       footerViewer: 'Viewer mode does not require password or prior approval.',
       footerAdmin: 'New emails will automatically enter the approval queue.'
     },
@@ -241,17 +265,17 @@ export const TRANSLATIONS: Record<Language, any> = {
       addTitle: 'Add New Event',
       fieldTitle: 'Title',
       fieldDesc: 'Message',
-      placeholderTitle: 'Ex: General Meeting...',
+      placeholderTitle: 'Ex: Thought of the day...',
       placeholderDesc: 'Write the details...',
       enhanceAI: 'Enhance with AI',
       enhancing: 'Enhancing...',
-      urgentHelp: 'Events marked as important will be highlighted.',
+      reflectionHelp: 'Messages of encouragement or verses.',
       btnClose: 'Close',
       btnPublish: 'Publish',
       types: {
         notice: 'Notices',
         news: 'Events',
-        urgent: 'Important'
+        reflection: 'Reflection'
       }
     },
     prayerModal: {
@@ -302,6 +326,10 @@ export const TRANSLATIONS: Record<Language, any> = {
       tableLogins: 'Logins',
       btnApproveAdmin: 'Make Admin',
       btnKeep: 'Keep Current'
+    },
+    dailyVerse: {
+      title: 'Verse of the Day',
+      loading: 'Finding inspiration...'
     }
   },
   es: {
@@ -319,15 +347,20 @@ export const TRANSLATIONS: Record<Language, any> = {
     login: {
       headerSub: 'Calendario',
       tabViewer: 'Visualizador',
-      tabAdmin: 'Miembro / Admin',
+      tabAdmin: 'Administrativo',
       viewerTitle: 'Acceso Rápido',
       viewerDesc: 'Ingrese su celular para ver el calendario.',
       adminTitle: 'Área Restringida',
       adminDesc: 'Login exclusivo para moderadores y editores.',
+      registerTitle: 'Solicitud de Registro',
+      registerDesc: 'Complete sus datos para solicitar acceso administrativo.',
       labelPhone: 'Celular',
       labelEmail: 'E-mail Corporativo',
+      labelName: 'Nombre Completo',
+      labelContactPhone: 'Celular de Contacto',
       btnAccess: 'Acceder al Calendario',
       btnContinue: 'Continuar',
+      btnRequest: 'Solicitar Acceso',
       footerViewer: 'El modo visualizador no requiere contraseña ni aprobación.',
       footerAdmin: 'Nuevos correos entrarán automáticamente en cola de aprobación.'
     },
@@ -342,17 +375,17 @@ export const TRANSLATIONS: Record<Language, any> = {
       addTitle: 'Añadir Nuevo Evento',
       fieldTitle: 'Título',
       fieldDesc: 'Mensaje',
-      placeholderTitle: 'Ej: Reunión General...',
+      placeholderTitle: 'Ej: Pensamiento del día...',
       placeholderDesc: 'Escriba los detalles...',
       enhanceAI: 'Mejorar con IA',
       enhancing: 'Mejorando...',
-      urgentHelp: 'Eventos marcados como importantes serán destacados.',
+      reflectionHelp: 'Mensajes de aliento o versículos.',
       btnClose: 'Cerrar',
       btnPublish: 'Publicar',
       types: {
         notice: 'Avisos',
         news: 'Eventos',
-        urgent: 'Importante'
+        reflection: 'Reflexión'
       }
     },
     prayerModal: {
@@ -403,6 +436,10 @@ export const TRANSLATIONS: Record<Language, any> = {
       tableLogins: 'Logins',
       btnApproveAdmin: 'Hacer Admin',
       btnKeep: 'Mantener Actual'
+    },
+    dailyVerse: {
+      title: 'Versículo del Día',
+      loading: 'Buscando inspiración...'
     }
   }
 };

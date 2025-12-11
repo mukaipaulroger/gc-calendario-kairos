@@ -8,13 +8,13 @@ import { TRANSLATIONS } from './translations';
 import CalendarGrid from './components/CalendarGrid';
 import EventModal from './components/EventModal';
 import NewsList from './components/NewsList';
+import DailyVerse from './components/DailyVerse';
 import Avatar from './components/Avatar';
 import Button from './components/Button';
 import LoginScreen from './components/LoginScreen';
 import ModeratorPanel from './components/ModeratorPanel';
 import ProfileModal from './components/ProfileModal';
 import PrayerModal from './components/PrayerModal';
-import Logo from './components/Logo';
 import { ChevronLeft, ChevronRight, LogOut, ShieldAlert, Heart } from 'lucide-react';
 import { suggestEvents } from './services/geminiService';
 
@@ -35,7 +35,7 @@ const App: React.FC = () => {
   // Date-fns locale mapping
   const localeMap = {
     pt: ptBR,
-    jp: ja, // Fixed: key must be 'jp' to match Language type
+    jp: ja,
     en: enUS,
     es: es
   };
@@ -54,7 +54,6 @@ const App: React.FC = () => {
   
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [prayerRequests, setPrayerRequests] = useState<PrayerRequest[]>([]);
-  const [isSuggesting, setIsSuggesting] = useState(false);
 
   // Initialize with dummy events
   useEffect(() => {
@@ -62,142 +61,113 @@ const App: React.FC = () => {
     setEvents([
       {
         id: '1',
-        title: 'Reunião de Planejamento',
-        description: 'Definição de metas para o Q4 com toda a equipe administrativa.',
-        date: today,
+        title: 'Culto de Celebração',
+        description: 'Culto da família com Santa Ceia.',
+        date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + (7 - today.getDay())), // Next Sunday
         type: 'notice',
         authorId: 'u1',
-        createdAt: new Date(),
+        createdAt: new Date()
       },
       {
         id: '2',
-        title: 'Manutenção do Servidor',
-        description: 'Os sistemas ficarão indisponíveis das 22h às 02h.',
+        title: 'Reunião de Líderes',
+        description: 'Alinhamento mensal no escritório.',
         date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2),
-        type: 'urgent',
-        authorId: 'u3',
-        createdAt: new Date(),
+        type: 'news',
+        authorId: 'u2',
+        createdAt: new Date()
+      },
+      {
+        id: '3',
+        title: 'Versículo da Semana',
+        description: 'O Senhor é o meu pastor e nada me faltará.',
+        date: today,
+        type: 'reflection',
+        authorId: 'u5',
+        createdAt: new Date()
       }
     ]);
   }, []);
 
-  const handleLogin = (inputValue: string, type: 'email' | 'phone') => {
-    
-    // Helper to increment login count
-    const incrementLogin = (u: User) => {
-        const updatedUser = { ...u, loginCount: (u.loginCount || 0) + 1 };
-        setUsers(prev => prev.map(user => user.id === u.id ? updatedUser : user));
-        return updatedUser;
-    };
+  const handleLogin = (identifier: string, type: 'email' | 'phone', extraData?: { name: string; phone: string }) => {
+    // Normalização: remove tudo que não for dígito para comparação
+    const normalize = (str: string) => str.replace(/\D/g, '');
+    const cleanId = type === 'phone' ? normalize(identifier) : identifier;
 
-    // 1. Phone Login (Viewer - Immediate Access)
-    if (type === 'phone') {
-      const existingUser = users.find(u => u.phone === inputValue);
-      
-      if (existingUser) {
-        if (existingUser.status === 'blocked') {
-          alert("Acesso bloqueado pelo administrador.");
-          return;
-        }
-        setCurrentUser(incrementLogin(existingUser));
-      } else {
-        // Create new viewer user immediately approved
+    let user = users.find(u => {
+       if (type === 'email') return u.email === identifier;
+       if (type === 'phone') {
+          return u.phone && normalize(u.phone) === cleanId;
+       }
+       return false;
+    });
+
+    // Fluxo de Cadastro de Admin (Quando extraData existe - Modal de Cadastro)
+    if (!user && extraData) {
         const newUser: User = {
-          id: `u${Date.now()}`,
-          name: `Visitante ${inputValue.slice(-4)}`,
-          phone: inputValue,
-          avatarUrl: `https://picsum.photos/seed/${inputValue}/100/100`,
-          role: 'viewer',
-          status: 'approved', // Immediate approval for phone
-          isGCMember: false,
-          loginCount: 1
+            id: `u_${Date.now()}`,
+            name: extraData.name,
+            email: type === 'email' ? identifier : undefined,
+            phone: type === 'phone' ? identifier : extraData.phone,
+            role: 'viewer', // Inicialmente viewer, aguardando aprovação para admin/editor
+            status: 'pending',
+            avatarUrl: `https://picsum.photos/seed/${identifier}/100/100`,
+            loginCount: 0
         };
         setUsers([...users, newUser]);
-        setCurrentUser(newUser);
-      }
-      return;
+        alert("Solicitação enviada! Aguarde aprovação de um moderador.");
+        return;
     }
 
-    // 2. Email Login (Admin/Editor - Requires Approval)
-    const existingUser = users.find(u => u.email === inputValue);
+    // Fluxo de Visualizador (Acesso Rápido) - Registro Automático no "Banco de Dados"
+    if (!user && type === 'phone') {
+        // Cria um novo registro de usuário automaticamente
+        const newRegisteredUser: User = {
+            id: `u_auto_${Date.now()}`, // ID único
+            name: `Usuário ${identifier.slice(-4)}`, // Nome padrão baseado no final do telefone
+            phone: identifier,
+            role: 'viewer',
+            status: 'approved', // Auto-aprovado para acesso imediato
+            avatarUrl: `https://picsum.photos/seed/${cleanId}/100/100`, // Avatar determinístico
+            loginCount: 1,
+            city: 'Novo Registro',
+            isGCMember: false
+        };
 
-    if (existingUser) {
-      if (existingUser.status === 'approved') {
-        setCurrentUser(incrementLogin(existingUser));
-      } else if (existingUser.status === 'blocked') {
-        alert("Acesso bloqueado. Contate o administrador.");
-      } else {
-        alert("Sua conta aguarda aprovação de um moderador.");
-      }
+        // Adiciona ao estado (Simulando INSERT no Banco de Dados)
+        const updatedUserList = [...users, newRegisteredUser];
+        setUsers(updatedUserList);
+        
+        // Loga o usuário imediatamente
+        setCurrentUser(newRegisteredUser);
+        return;
+    }
+
+    // Login normal de usuário já existente
+    if (user) {
+        if (user.status === 'blocked') {
+            alert("Acesso bloqueado. Contate o administrador.");
+            return;
+        }
+        if (user.status === 'pending') {
+             alert("Sua conta ainda está aguardando aprovação.");
+             return;
+        }
+        
+        // Atualiza contagem de login
+        const updatedUser = { ...user, loginCount: (user.loginCount || 0) + 1 };
+        setUsers(users.map(u => u.id === user!.id ? updatedUser : u));
+        setCurrentUser(updatedUser);
     } else {
-      // Create new pending user
-      const newUser: User = {
-        id: `u${Date.now()}`,
-        name: inputValue.split('@')[0], 
-        email: inputValue,
-        avatarUrl: `https://picsum.photos/seed/${inputValue}/100/100`,
-        role: 'editor', // Requesting editor access usually implies this path
-        status: 'pending',
-        isGCMember: false,
-        loginCount: 0
-      };
-      setUsers([...users, newUser]);
-      
-      console.log(`[Simulação] Enviando e-mail de notificação para pr.mukai@gmail.com sobre novo usuário: ${inputValue}`);
-      alert(`Solicitação de acesso enviada com sucesso!\n\nUma notificação por e-mail foi enviada para o moderador (pr.mukai@gmail.com).\n\nAguarde a aprovação.`);
+        alert("Usuário não encontrado. Se você é um administrador, use a opção de cadastro.");
     }
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
+    setIsProfileModalOpen(false);
     setIsModeratorPanelOpen(false);
   };
-
-  const handleApproveUser = (userId: string, role: UserRole) => {
-    // When approving, we also clear any requestedRole
-    setUsers(users.map(u => u.id === userId ? { ...u, status: 'approved', role, requestedRole: undefined } : u));
-  };
-
-  const handleRejectUser = (userId: string) => {
-    setUsers(users.map(u => u.id === userId ? { ...u, status: 'blocked' } : u));
-  };
-
-  const handleUpdateProfile = (updatedUser: User) => {
-    setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
-    setCurrentUser(updatedUser);
-  };
-
-  const handleRequestRole = (requestedRole: UserRole) => {
-    if (!currentUser) return;
-    const updatedUser = { ...currentUser, requestedRole };
-    setUsers(users.map(u => u.id === currentUser.id ? updatedUser : u));
-    setCurrentUser(updatedUser);
-    alert('Sua solicitação para se tornar Moderador foi enviada para análise do Pr. Mukai.');
-  };
-
-  const handleSendPrayer = (content: string, isAnonymous: boolean, contactData?: { allowed: boolean, method?: ContactMethod, info?: string }) => {
-    if (!currentUser) return;
-    
-    const newRequest: PrayerRequest = {
-      id: `prayer-${Date.now()}`,
-      content,
-      authorId: currentUser.id,
-      isAnonymous,
-      createdAt: new Date(),
-      contactAllowed: contactData?.allowed,
-      contactMethod: contactData?.method,
-      contactInfo: contactData?.info
-    };
-    
-    setPrayerRequests([newRequest, ...prayerRequests]);
-    
-    // Simulate notification to admin
-    console.log(`[ADMIN NOTIFICATION] Novo pedido de oração recebido de ${isAnonymous ? 'Anônimo' : currentUser.name}`);
-    alert('Seu pedido de oração foi enviado com sucesso.\n\nO administrador foi notificado.');
-  };
-
-  const handlePrevMonth = () => setCurrentDate(subMonths(currentDate, 1));
-  const handleNextMonth = () => setCurrentDate(addMonths(currentDate, 1));
 
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
@@ -213,176 +183,193 @@ const App: React.FC = () => {
         date: selectedDate,
         type,
         authorId: currentUser.id,
-        createdAt: new Date(),
+        createdAt: new Date()
       };
       setEvents([...events, newEvent]);
     }
   };
 
-  const handleSuggestEvents = async () => {
-      setIsSuggesting(true);
-      const monthName = format(currentDate, 'MMMM yyyy', { locale: localeMap[language] });
-      // Pass the current language code to the API
-      const suggestions = await suggestEvents(monthName, localeMap[language].code || 'pt-BR');
-      
-      if (suggestions.length > 0) {
-          const newEvents: CalendarEvent[] = suggestions.map((s, idx) => ({
-              id: Math.random().toString(36).substr(2, 9),
-              title: s.title,
-              description: s.description,
-              date: new Date(currentDate.getFullYear(), currentDate.getMonth(), idx + 10),
-              type: 'news',
-              authorId: 'u5',
-              createdAt: new Date()
-          }));
-          setEvents(prev => [...prev, ...newEvents]);
-      }
-      setIsSuggesting(false);
+  const handleUpdateProfile = (updatedUser: User) => {
+      setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
+      setCurrentUser(updatedUser);
+  };
+
+  const handleRequestRole = (role: UserRole) => {
+      if (!currentUser) return;
+      const updated = { ...currentUser, requestedRole: role };
+      handleUpdateProfile(updated);
+  };
+
+  const handleApproveUser = (userId: string, role: UserRole) => {
+      setUsers(users.map(u => u.id === userId ? { ...u, status: 'approved', role, requestedRole: undefined } : u));
+  };
+
+  const handleRejectUser = (userId: string) => {
+      setUsers(users.filter(u => u.id !== userId));
+  };
+
+  const handleSendPrayer = (content: string, isAnonymous: boolean, contactData?: any) => {
+      if (!currentUser) return;
+      const newPrayer: PrayerRequest = {
+          id: Math.random().toString(36).substr(2, 9),
+          content,
+          authorId: currentUser.id,
+          isAnonymous,
+          createdAt: new Date(),
+          contactAllowed: contactData?.allowed,
+          contactMethod: contactData?.method,
+          contactInfo: contactData?.info
+      };
+      setPrayerRequests([newPrayer, ...prayerRequests]);
+      alert("Pedido de oração enviado com sucesso!");
   };
 
   if (!currentUser) {
-    return <LoginScreen onLogin={handleLogin} t={t} language={language} setLanguage={setLanguage} />;
+    return (
+      <LoginScreen 
+        onLogin={handleLogin} 
+        t={t} 
+        language={language} 
+        setLanguage={setLanguage}
+        users={users}
+      />
+    );
   }
 
-  const pendingCount = users.filter(u => u.status === 'pending' || u.requestedRole === 'admin').length;
-  const newPrayersCount = prayerRequests.length;
-  const isAdmin = currentUser.role === 'admin';
-  const canEdit = currentUser.role === 'admin' || currentUser.role === 'editor';
-
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col text-gray-100 font-sans">
+    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col font-sans transition-colors duration-500">
       
-      {/* Top Navigation Bar */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-40 shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-           <div className="flex items-end gap-3 pb-1">
-             {/* Logo Kairós */}
-             <Logo className="h-10 w-auto text-yellow-500 mb-1" />
-             <h1 className="text-5xl font-script text-gray-100 leading-none hidden sm:block" style={{ transform: 'translateY(4px)' }}>{t('app.title')}</h1>
-             <span className="text-xl font-medium text-gray-500 mb-1 ml-1 border-l-2 border-gray-700 pl-3 leading-tight hidden md:inline-block">{t('app.subtitle')}</span>
-           </div>
+      {/* Header */}
+      <header className="bg-gray-800 border-b border-gray-700 p-3 flex items-center justify-between sticky top-0 z-40 shadow-lg">
+        <div className="flex items-center gap-4">
+          
+          {/* Logo "Gc" removed from here to clean up visual */}
+          
+          {/* Language Selector */}
+          <div className="bg-gray-900/50 p-1 rounded-lg border border-gray-700 flex gap-1">
+              {(['pt', 'en', 'es', 'jp'] as Language[]).map(lang => (
+                 <button 
+                   key={lang}
+                   onClick={() => setLanguage(lang)}
+                   className={`w-6 h-6 flex items-center justify-center rounded transition-all hover:scale-110 ${language === lang ? 'bg-gray-700 shadow-sm' : 'opacity-40 hover:opacity-100'}`}
+                   title={lang}
+                 >
+                   {lang === 'pt' ? '🇧🇷' : lang === 'en' ? '🇺🇸' : lang === 'es' ? '🇪🇸' : '🇯🇵'}
+                 </button>
+              ))}
+          </div>
 
-           {/* User Control */}
-           <div className="flex items-center gap-4">
-              
-               {/* Language Selector */}
-               <div className="flex items-center gap-1 bg-gray-800 rounded-lg p-1 border border-gray-700">
-                  <button onClick={() => setLanguage('pt')} className={`p-1.5 rounded ${language === 'pt' ? 'bg-gray-700' : 'opacity-50 hover:opacity-100'}`} title="Português">🇧🇷</button>
-                  <button onClick={() => setLanguage('en')} className={`p-1.5 rounded ${language === 'en' ? 'bg-gray-700' : 'opacity-50 hover:opacity-100'}`} title="English">🇺🇸</button>
-                  <button onClick={() => setLanguage('jp')} className={`p-1.5 rounded ${language === 'jp' ? 'bg-gray-700' : 'opacity-50 hover:opacity-100'}`} title="日本語">🇯🇵</button>
-                  <button onClick={() => setLanguage('es')} className={`p-1.5 rounded ${language === 'es' ? 'bg-gray-700' : 'opacity-50 hover:opacity-100'}`} title="Español">🇪🇸</button>
-               </div>
+        </div>
 
-              {/* Prayer Button (For everyone) */}
-              <button 
-                onClick={() => setIsPrayerModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white rounded-full shadow-lg transition-all transform hover:scale-105 font-bold text-sm border border-pink-500/50"
-                title={t('app.prayerButton')}
-              >
-                <Heart size={18} fill="currentColor" />
-                <span className="hidden sm:inline">{t('app.prayerButton')}</span>
-              </button>
+        <div className="flex items-center gap-2">
+            
+            {/* Prayer Request Button - Now with visible text on all screens */}
+            <Button 
+               variant="primary" 
+               onClick={() => setIsPrayerModalOpen(true)}
+               className="!rounded-full px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 border-none shadow-lg shadow-pink-900/20 flex items-center"
+            >
+               <Heart className="fill-white" size={20} />
+               <span className="ml-2 font-bold whitespace-nowrap">{t('app.prayerButton')}</span>
+            </Button>
 
-              {isAdmin && (
-                <button 
-                  onClick={() => setIsModeratorPanelOpen(true)}
-                  className="relative p-2 text-gray-400 hover:text-yellow-500 transition-colors rounded-full hover:bg-gray-800"
-                  title="Painel do Moderador"
-                >
-                  <ShieldAlert size={20} />
-                  {(pendingCount > 0 || newPrayersCount > 0) && (
-                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-600 rounded-full border-2 border-gray-900 animate-pulse"></span>
-                  )}
-                </button>
-              )}
-
-              <div className="flex items-center gap-3 bg-gray-800 py-1.5 pl-3 pr-2 rounded-full border border-gray-700">
-                  <div 
-                    className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
-                    onClick={() => setIsProfileModalOpen(true)}
-                    title="Editar Perfil"
-                  >
-                    <Avatar 
-                      src={currentUser.avatarUrl}
-                      alt={currentUser.name}
-                      size="sm"
-                    />
-                    <div className="text-right hidden sm:block">
-                      <p className="text-xs font-bold text-gray-200 max-w-[100px] truncate">{currentUser.name}</p>
-                      <p className="text-[10px] text-gray-500 capitalize">{t(`app.profile.${currentUser.role}`)}</p>
-                    </div>
-                  </div>
+            {/* Moderator Panel (If Admin/Editor) */}
+            {(currentUser.role === 'admin' || currentUser.role === 'editor') && (
+               <div className="relative">
                   <button 
-                    onClick={handleLogout}
-                    className="ml-2 p-1 text-gray-500 hover:text-red-400 transition-colors rounded-full hover:bg-gray-700"
-                    title={t('app.logout')}
+                    onClick={() => setIsModeratorPanelOpen(true)}
+                    className="p-2 text-gray-400 hover:text-white transition-colors relative"
+                    title={t('moderator.title')}
                   >
-                    <LogOut size={16} />
+                    <ShieldAlert size={24} />
+                    {users.filter(u => u.status === 'pending').length > 0 && (
+                        <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-gray-800"></span>
+                    )}
                   </button>
-              </div>
-           </div>
+               </div>
+            )}
+
+            {/* User Profile */}
+            <div className="flex items-center gap-2 border-l border-gray-700 pl-2 ml-1">
+              <Avatar 
+                src={currentUser.avatarUrl} 
+                alt={currentUser.name} 
+                size="md" 
+                onClick={() => setIsProfileModalOpen(true)}
+                className="cursor-pointer ring-2 ring-gray-700 hover:ring-yellow-500 transition-all"
+              />
+              <button onClick={handleLogout} className="text-gray-500 hover:text-red-400 p-1">
+                 <LogOut size={20} />
+              </button>
+            </div>
         </div>
       </header>
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8 lg:h-[calc(100vh-10rem)] h-auto">
-          
-          {/* Main Calendar Section */}
-          <div className="flex-1 flex flex-col min-h-[500px] lg:min-h-0">
-             
-             {/* Calendar Controls */}
-             <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <h2 className="text-3xl font-bold text-gray-100 capitalize">
-                    {format(currentDate, language === 'jp' ? 'yyyy年 MMMM' : 'MMMM yyyy', { locale: localeMap[language] })}
-                  </h2>
-                  <div className="flex bg-gray-800 rounded-lg border border-gray-700 shadow-sm overflow-hidden">
-                    <button onClick={handlePrevMonth} className="p-2 hover:bg-gray-700 text-gray-400 rounded-l-lg border-r border-gray-700">
-                       <ChevronLeft size={20} />
-                    </button>
-                    <button onClick={handleNextMonth} className="p-2 hover:bg-gray-700 text-gray-400 rounded-r-lg">
-                       <ChevronRight size={20} />
-                    </button>
-                  </div>
-                </div>
-                
-                {canEdit && (
-                  <Button 
-                      variant="secondary" 
-                      icon={<span className="text-lg">✨</span>}
-                      onClick={handleSuggestEvents}
-                      isLoading={isSuggesting}
-                      className="!bg-gray-800 !text-gray-200 !border-gray-700 hover:!bg-gray-700"
-                  >
-                      {t('calendar.aiSuggest')}
-                  </Button>
-                )}
-             </div>
-
-             <div className="flex-1 min-h-0">
-               <CalendarGrid 
-                 currentDate={currentDate} 
-                 events={events} 
-                 users={users}
-                 onDateClick={handleDateClick}
-                 userRole={currentUser.role}
-                 t={t}
-                 locale={localeMap[language]}
-               />
-             </div>
-          </div>
-
-          {/* Sidebar News Feed */}
-          <div className="w-full lg:w-96 flex-shrink-0 lg:h-full h-auto">
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        
+        {/* Sidebar (Daily Verse & News) */}
+        <aside className="w-full md:w-80 bg-gray-800/50 border-r border-gray-700 flex flex-col overflow-hidden order-2 md:order-1">
+           <div className="p-4 flex-shrink-0">
+             <DailyVerse language={language} t={t} />
+           </div>
+           <div className="flex-1 overflow-hidden p-4 pt-0">
              <NewsList events={events} users={users} t={t} locale={localeMap[language]} />
-          </div>
+           </div>
+        </aside>
 
-        </div>
-      </main>
+        {/* Calendar Grid Area */}
+        <main className="flex-1 flex flex-col bg-gray-900 relative overflow-hidden order-1 md:order-2">
+            
+            {/* Calendar Controls */}
+            <div className="p-4 flex items-center justify-between">
+               <h2 className="text-2xl font-bold text-gray-100 capitalize flex items-center gap-2">
+                  {format(currentDate, localeMap[language].code === 'ja' ? 'yyyy年 MMMM' : 'MMMM yyyy', { locale: localeMap[language] })}
+               </h2>
+               
+               <div className="flex items-center gap-2 bg-gray-800 rounded-lg p-1 border border-gray-700">
+                  <button 
+                    onClick={() => setCurrentDate(subMonths(currentDate, 1))}
+                    className="p-1.5 hover:bg-gray-700 rounded-md text-gray-400 hover:text-white"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <button 
+                    onClick={() => setCurrentDate(new Date())}
+                    className="px-3 py-1.5 hover:bg-gray-700 rounded-md text-xs font-bold text-gray-300"
+                  >
+                    {t('calendar.details')}
+                  </button>
+                  <button 
+                    onClick={() => setCurrentDate(addMonths(currentDate, 1))}
+                    className="p-1.5 hover:bg-gray-700 rounded-md text-gray-400 hover:text-white"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+               </div>
+            </div>
 
+            {/* Grid */}
+            <div className="flex-1 overflow-auto p-4 pt-0">
+               <div className="h-full rounded-2xl overflow-hidden border border-gray-700 shadow-2xl">
+                 <CalendarGrid 
+                    currentDate={currentDate} 
+                    events={events} 
+                    users={users} 
+                    onDateClick={handleDateClick}
+                    userRole={currentUser.role}
+                    t={t}
+                    locale={localeMap[language]}
+                 />
+               </div>
+            </div>
+        </main>
+      </div>
+
+      {/* Modals */}
       <EventModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
         selectedDate={selectedDate}
         currentUser={currentUser}
         onSave={handleSaveEvent}
@@ -391,7 +378,19 @@ const App: React.FC = () => {
         locale={localeMap[language]}
       />
 
-      <ProfileModal
+      <ModeratorPanel 
+        isOpen={isModeratorPanelOpen}
+        onClose={() => setIsModeratorPanelOpen(false)}
+        users={users}
+        currentUser={currentUser}
+        prayerRequests={prayerRequests}
+        onApprove={handleApproveUser}
+        onReject={handleRejectUser}
+        t={t}
+        locale={localeMap[language]}
+      />
+
+      <ProfileModal 
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         currentUser={currentUser}
@@ -408,19 +407,6 @@ const App: React.FC = () => {
         t={t}
       />
 
-      {isAdmin && (
-        <ModeratorPanel 
-          isOpen={isModeratorPanelOpen}
-          onClose={() => setIsModeratorPanelOpen(false)}
-          users={users}
-          currentUser={currentUser}
-          prayerRequests={prayerRequests}
-          onApprove={handleApproveUser}
-          onReject={handleRejectUser}
-          t={t}
-          locale={localeMap[language]}
-        />
-      )}
     </div>
   );
 };

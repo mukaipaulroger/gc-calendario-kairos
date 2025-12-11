@@ -1,6 +1,13 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+// Helper to remove Markdown code blocks (```json ... ```) from the response
+const cleanJson = (text: string): string => {
+  if (!text) return "";
+  return text.replace(/^```json\s*/, '').replace(/```$/, '').trim();
+};
 
 export const enhanceAnnouncement = async (text: string, type: string, langCode: string = 'pt-BR'): Promise<string> => {
   try {
@@ -61,7 +68,13 @@ export const suggestEvents = async (dateContext: string, langCode: string = 'pt-
       
       const text = response.text;
       if (!text) return [];
-      return JSON.parse(text);
+      
+      try {
+        return JSON.parse(cleanJson(text));
+      } catch (parseError) {
+        console.error("JSON Parse Error in suggestEvents:", parseError);
+        return [];
+      }
   } catch (e) {
       console.error(e);
       return [];
@@ -86,5 +99,66 @@ export const translateContent = async (text: string, targetLangCode: string): Pr
   } catch (error) {
     console.error("Translation error:", error);
     return text;
+  }
+};
+
+export const getDailyVerse = async (langCode: string): Promise<{ text: string; reference: string; version: string }> => {
+  try {
+    const prompt = `
+      Select a random, encouraging Bible verse.
+      
+      Language Requirement:
+      - Return the verse in the language corresponding to code: "${langCode}".
+      
+      Version Requirement:
+      - If Portuguese, use 'Nova Versão Internacional' (NVI).
+      - If English, use 'New International Version' (NIV).
+      - If Spanish, use 'Nueva Versión Internacional' (NVI).
+      - If Japanese, use 'Shinkaiyaku' or a standard modern equivalent.
+      
+      Output JSON Format:
+      {
+        "text": "The verse text...",
+        "reference": "Book Chapter:Verse",
+        "version": "NVI" (or appropriate version acronym)
+      }
+    `;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            text: { type: Type.STRING },
+            reference: { type: Type.STRING },
+            version: { type: Type.STRING }
+          },
+          required: ['text', 'reference', 'version']
+        }
+      }
+    });
+
+    const text = response.text;
+    if (!text) throw new Error("No response from AI");
+    
+    return JSON.parse(cleanJson(text));
+  } catch (error) {
+    console.error("Verse generation error:", error);
+    // Fallback based on language if AI fails
+    if (langCode.includes('pt')) {
+      return { 
+        text: "O Senhor é o meu pastor; de nada terei falta.", 
+        reference: "Salmos 23:1", 
+        version: "NVI" 
+      };
+    }
+    return { 
+      text: "The Lord is my shepherd, I lack nothing.", 
+      reference: "Psalm 23:1", 
+      version: "NIV" 
+    };
   }
 };

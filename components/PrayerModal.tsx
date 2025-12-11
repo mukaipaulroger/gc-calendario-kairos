@@ -138,24 +138,23 @@ const PrayerModal: React.FC<PrayerModalProps> = ({ isOpen, onClose, currentUser,
               <div className="bg-gray-800 p-4 rounded-lg border border-gray-600 animate-fadeIn">
                  <label className="block text-xs font-bold text-gray-400 mb-2 uppercase">{t('prayerModal.formContact')}</label>
                  
-                 <div className="grid grid-cols-3 gap-2 mb-4">
+                 <div className="grid grid-cols-2 gap-2 mb-4">
                     <button
                        type="button"
-                       onClick={() => setContactMethod('sms')}
+                       onClick={() => {
+                           setContactMethod('sms');
+                           setContactInfo(currentUser.phone || '');
+                       }}
                        className={`p-2 rounded-md text-xs font-medium border transition-colors ${contactMethod === 'sms' ? 'bg-blue-900/50 border-blue-500 text-blue-200' : 'bg-gray-700 border-gray-600 text-gray-400'}`}
                     >
                       SMS
                     </button>
                     <button
                        type="button"
-                       onClick={() => setContactMethod('short_mail')}
-                       className={`p-2 rounded-md text-xs font-medium border transition-colors ${contactMethod === 'short_mail' ? 'bg-blue-900/50 border-blue-500 text-blue-200' : 'bg-gray-700 border-gray-600 text-gray-400'}`}
-                    >
-                      Short Mail
-                    </button>
-                    <button
-                       type="button"
-                       onClick={() => setContactMethod('email')}
+                       onClick={() => {
+                           setContactMethod('email');
+                           setContactInfo(currentUser.email || '');
+                       }}
                        className={`p-2 rounded-md text-xs font-medium border transition-colors ${contactMethod === 'email' ? 'bg-blue-900/50 border-blue-500 text-blue-200' : 'bg-gray-700 border-gray-600 text-gray-400'}`}
                     >
                       E-mail

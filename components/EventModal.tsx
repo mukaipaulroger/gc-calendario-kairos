@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import { User, EventType, CalendarEvent } from '../types';
+import { User, EventType, CalendarEvent, Language } from '../types';
 import Avatar from './Avatar';
 import Button from './Button';
 import { enhanceAnnouncement, translateContent } from '../services/geminiService';
-import { X, Sparkles, AlertCircle, Calendar, Languages, Loader2 } from 'lucide-react';
+import { X, Sparkles, BookOpen, Calendar, Languages, Loader2 } from 'lucide-react';
 import { isSameDay, format } from 'date-fns';
 import { EVENT_COLORS, EVENT_LABELS } from '../constants';
 import { Locale } from 'date-fns';
@@ -29,6 +29,7 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, selectedDate, 
   // Translation State
   const [translations, setTranslations] = useState<Record<string, { title?: string, description?: string }>>({});
   const [translatingId, setTranslatingId] = useState<string | null>(null);
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -36,6 +37,7 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, selectedDate, 
       setDescription('');
       setType('notice');
       setTranslations({});
+      setActiveMenuId(null);
     }
   }, [isOpen]);
 
@@ -55,20 +57,26 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, selectedDate, 
     }
   };
 
-  const handleTranslateEvent = async (event: CalendarEvent) => {
+  const handleTranslateEvent = async (event: CalendarEvent, targetLang: Language) => {
       const id = event.id;
-      if (translations[id]) {
-          const newTrans = { ...translations };
-          delete newTrans[id];
-          setTranslations(newTrans);
-          return;
-      }
-
+      setActiveMenuId(null);
       setTranslatingId(id);
+
+      // Map Language type to API locale code
+      const getCode = (l: Language) => {
+          switch(l) {
+              case 'en': return 'en-US';
+              case 'jp': return 'ja-JP';
+              case 'es': return 'es-ES';
+              default: return 'pt-BR';
+          }
+      };
+
       try {
+          const code = getCode(targetLang);
           const [transTitle, transDesc] = await Promise.all([
-              translateContent(event.title, locale.code || 'en'),
-              translateContent(event.description, locale.code || 'en')
+              translateContent(event.title, code),
+              translateContent(event.description, code)
           ]);
           setTranslations(prev => ({
               ...prev,
@@ -79,6 +87,12 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, selectedDate, 
       } finally {
           setTranslatingId(null);
       }
+  };
+
+  const clearTranslation = (id: string) => {
+    const newTrans = { ...translations };
+    delete newTrans[id];
+    setTranslations(newTrans);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -133,14 +147,42 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, selectedDate, 
                         {t(`eventModal.types.${event.type}`)}
                       </span>
                       
-                      <button 
-                        onClick={() => handleTranslateEvent(event)}
-                        disabled={translatingId === event.id}
-                        className="p-1 rounded-full text-gray-400 hover:text-yellow-500 hover:bg-gray-600 transition-colors"
-                        title="Traduzir/Translate"
-                      >
-                         {translatingId === event.id ? <Loader2 size={14} className="animate-spin" /> : <Languages size={14} />}
-                      </button>
+                      <div className="relative">
+                        {translations[event.id] ? (
+                            <button 
+                                onClick={() => clearTranslation(event.id)}
+                                className="p-1 rounded-full text-indigo-300 bg-indigo-900/50 hover:bg-indigo-900 transition-colors"
+                                title="Restaurar Original"
+                            >
+                                <X size={14} />
+                            </button>
+                        ) : (
+                             <button 
+                                onClick={() => setActiveMenuId(activeMenuId === event.id ? null : event.id)}
+                                disabled={translatingId === event.id}
+                                className="p-1 rounded-full text-gray-400 hover:text-yellow-500 hover:bg-gray-600 transition-colors"
+                                title="Traduzir/Translate"
+                             >
+                                {translatingId === event.id ? <Loader2 size={14} className="animate-spin" /> : <Languages size={14} />}
+                             </button>
+                        )}
+
+                        {/* Language Dropdown */}
+                        {activeMenuId === event.id && !translations[event.id] && (
+                            <div className="absolute right-0 top-full mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl p-1 flex gap-1 z-20">
+                                {(['pt', 'en', 'es', 'jp'] as Language[]).map((lang) => (
+                                    <button
+                                        key={lang}
+                                        onClick={() => handleTranslateEvent(event, lang)}
+                                        className="p-1 hover:bg-gray-700 rounded text-base transition-colors"
+                                        title={`Traduzir para ${lang.toUpperCase()}`}
+                                    >
+                                        {lang === 'pt' ? '🇧🇷' : lang === 'en' ? '🇺🇸' : lang === 'es' ? '🇪🇸' : '🇯🇵'}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                      </div>
                     </div>
                     
                     <h4 className="font-bold text-gray-200 text-lg mb-1">
@@ -165,14 +207,14 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, selectedDate, 
                 
                 {/* Type Selection */}
                 <div className="grid grid-cols-3 gap-3">
-                  {(['notice', 'news', 'urgent'] as EventType[]).map((tType) => (
+                  {(['notice', 'news', 'reflection'] as EventType[]).map((tType) => (
                     <button
                       key={tType}
                       type="button"
                       onClick={() => setType(tType)}
                       className={`py-2 px-3 rounded-lg text-sm font-medium border transition-all ${
                         type === tType 
-                          ? tType === 'urgent' ? 'bg-red-900/50 border-red-700 text-red-200 ring-1 ring-red-700' 
+                          ? tType === 'reflection' ? 'bg-purple-900/50 border-purple-700 text-purple-200 ring-1 ring-purple-700' 
                           : tType === 'news' ? 'bg-green-900/50 border-green-700 text-green-200 ring-1 ring-green-700'
                           : 'bg-blue-900/50 border-blue-700 text-blue-200 ring-1 ring-blue-700'
                           : 'bg-gray-700 border-gray-600 text-gray-400 hover:bg-gray-600'
@@ -218,10 +260,10 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, selectedDate, 
                   />
                 </div>
 
-                {type === 'urgent' && (
-                  <div className="bg-red-900/30 border border-red-900/50 p-3 rounded-lg flex items-start text-red-300 text-sm">
-                      <AlertCircle size={18} className="mr-2 mt-0.5 flex-shrink-0" />
-                      <p>{t('eventModal.urgentHelp')}</p>
+                {type === 'reflection' && (
+                  <div className="bg-purple-900/30 border border-purple-900/50 p-3 rounded-lg flex items-start text-purple-300 text-sm">
+                      <BookOpen size={18} className="mr-2 mt-0.5 flex-shrink-0" />
+                      <p>{t('eventModal.reflectionHelp')}</p>
                   </div>
                 )}
 
@@ -229,7 +271,7 @@ const EventModal: React.FC<EventModalProps> = ({ isOpen, onClose, selectedDate, 
                   <Button type="button" variant="secondary" onClick={onClose} className="!bg-gray-700 !border-gray-600 !text-gray-200 hover:!bg-gray-600">
                     {t('eventModal.btnClose')}
                   </Button>
-                  <Button type="submit" variant={type === 'urgent' ? 'danger' : 'primary'}>
+                  <Button type="submit" className={type === 'reflection' ? '!bg-purple-600 hover:!bg-purple-700' : ''}>
                     {t('eventModal.btnPublish')}
                   </Button>
                 </div>

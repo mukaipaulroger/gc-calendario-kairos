@@ -1,5 +1,5 @@
 
-export type EventType = 'notice' | 'news' | 'urgent';
+export type EventType = 'notice' | 'news' | 'reflection';
 
 export type UserRole = 'admin' | 'editor' | 'viewer';
 export type UserStatus = 'approved' | 'pending' | 'blocked';
