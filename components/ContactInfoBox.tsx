@@ -13,7 +13,7 @@ const ContactInfoBox: React.FC<ContactInfoBoxProps> = ({ isAdmin, t }) => {
     email: 'contato@kairos.com',
     phone: '090-1234-5678',
     instagram: '@kairos.gc',
-    address: 'Tokyo-to, Minato-ku...'
+    address: t('contactBox.defaultAddress')
   });
 
   const [editForm, setEditForm] = useState(info);

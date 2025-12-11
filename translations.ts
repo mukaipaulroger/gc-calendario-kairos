@@ -7,6 +7,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       title: 'Kairós',
       subtitle: 'Calendário',
       prayerButton: 'Pedido de Oração',
+      prayerButtonMobile: 'Oração',
       profile: {
         viewer: 'Visualizador',
         editor: 'Editor',
@@ -20,6 +21,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       labelPhone: 'Telefone',
       labelInsta: 'Instagram',
       labelAddress: 'Endereço',
+      defaultAddress: 'Rua das Flores, 123 - São Paulo',
       btnEdit: 'Editar',
       btnSave: 'Salvar',
       btnCancel: 'Cancelar'
@@ -42,7 +44,13 @@ export const TRANSLATIONS: Record<Language, any> = {
       btnContinue: 'Continuar',
       btnRequest: 'Solicitar Acesso',
       footerViewer: 'O modo visualizador não requer senha ou aprovação prévia.',
-      footerAdmin: 'Novos e-mails entrarão automaticamente na fila de aprovação.'
+      footerAdmin: 'Novos e-mails entrarão automaticamente na fila de aprovação.',
+      placeholders: {
+        phone: '090-1234-5678',
+        email: 'seu.nome@empresa.com',
+        name: 'Nome Completo',
+        registerPhone: 'Seu Celular'
+      }
     },
     calendar: {
       weekDays: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
@@ -82,7 +90,11 @@ export const TRANSLATIONS: Record<Language, any> = {
       formContact: 'Forma de Contato',
       labelEmail: 'Endereço de E-mail',
       labelPhone: 'Número do Telefone',
-      btnSend: 'Enviar Pedido'
+      btnSend: 'Enviar Pedido',
+      placeholders: {
+        email: 'seu@email.com',
+        phone: 'Ex: 090-1234-5678'
+      }
     },
     profileModal: {
       title: 'Meu Perfil',
@@ -95,7 +107,10 @@ export const TRANSLATIONS: Record<Language, any> = {
       descGCMember: 'Participa de um Grupo de Crescimento?',
       btnRequestAdmin: 'Solicitar Acesso de Moderador',
       statusPending: 'Solicitação de Moderador Pendiente',
-      btnSave: 'Salvar Alterações'
+      btnSave: 'Salvar Alterações',
+      placeholders: {
+        email: 'exemplo@email.com'
+      }
     },
     newsList: {
       title: 'Últimas Atualizações',
@@ -103,7 +118,7 @@ export const TRANSLATIONS: Record<Language, any> = {
     },
     moderator: {
       title: 'Painel Administrativo',
-      tabAccess: 'Moderação',
+      tabAccess: 'Moderation',
       tabPrayers: 'Orações',
       tabStats: 'Estatísticas',
       sectionPromote: 'Solicitações de Promoção',
@@ -128,6 +143,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       title: 'カイロス',
       subtitle: 'カレンダー',
       prayerButton: 'お祈りリクエスト',
+      prayerButtonMobile: '祈り',
       profile: {
         viewer: '閲覧者',
         editor: '編集者',
@@ -141,6 +157,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       labelPhone: '電話番号',
       labelInsta: 'Instagram',
       labelAddress: '住所',
+      defaultAddress: '東京都港区...',
       btnEdit: '編集',
       btnSave: '保存',
       btnCancel: 'キャンセル'
@@ -163,7 +180,13 @@ export const TRANSLATIONS: Record<Language, any> = {
       btnContinue: '次へ',
       btnRequest: 'アクセスをリクエスト',
       footerViewer: '閲覧モードはパスワードや事前承認が不要です。',
-      footerAdmin: '新しいメールアドレスは自動的に承認待ちになります。'
+      footerAdmin: '新しいメールアドレスは自動的に承認待ちになります。',
+      placeholders: {
+        phone: '090-1234-5678',
+        email: 'name@company.com',
+        name: '氏名',
+        registerPhone: '携帯電話番号'
+      }
     },
     calendar: {
       weekDays: ['日', '月', '火', '水', '木', '金', '土'],
@@ -203,7 +226,11 @@ export const TRANSLATIONS: Record<Language, any> = {
       formContact: '連絡方法',
       labelEmail: 'メールアドレス',
       labelPhone: '電話番号',
-      btnSend: '送信する'
+      btnSend: '送信する',
+      placeholders: {
+        email: 'example@email.com',
+        phone: '例: 090-1234-5678'
+      }
     },
     profileModal: {
       title: 'プロフィール',
@@ -216,7 +243,10 @@ export const TRANSLATIONS: Record<Language, any> = {
       descGCMember: '成長グループに参加していますか？',
       btnRequestAdmin: '管理者権限をリクエスト',
       statusPending: '管理者承認待ち',
-      btnSave: '変更を保存'
+      btnSave: '変更を保存',
+      placeholders: {
+        email: 'example@email.com'
+      }
     },
     newsList: {
       title: '最新の更新',
@@ -249,6 +279,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       title: 'Kairós',
       subtitle: 'Calendar',
       prayerButton: 'Prayer Request',
+      prayerButtonMobile: 'Pray',
       profile: {
         viewer: 'Viewer',
         editor: 'Editor',
@@ -262,6 +293,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       labelPhone: 'Phone',
       labelInsta: 'Instagram',
       labelAddress: 'Address',
+      defaultAddress: 'Main Street, 123 - City',
       btnEdit: 'Edit',
       btnSave: 'Save',
       btnCancel: 'Cancel'
@@ -284,7 +316,13 @@ export const TRANSLATIONS: Record<Language, any> = {
       btnContinue: 'Continue',
       btnRequest: 'Request Access',
       footerViewer: 'Viewer mode does not require password or prior approval.',
-      footerAdmin: 'New emails will automatically enter the approval queue.'
+      footerAdmin: 'New emails will automatically enter the approval queue.',
+      placeholders: {
+        phone: '090-1234-5678',
+        email: 'name@company.com',
+        name: 'Full Name',
+        registerPhone: 'Your Phone'
+      }
     },
     calendar: {
       weekDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -324,7 +362,11 @@ export const TRANSLATIONS: Record<Language, any> = {
       formContact: 'Contact Method',
       labelEmail: 'Email Address',
       labelPhone: 'Phone Number',
-      btnSend: 'Send Request'
+      btnSend: 'Send Request',
+      placeholders: {
+        email: 'example@email.com',
+        phone: 'Ex: 090-1234-5678'
+      }
     },
     profileModal: {
       title: 'My Profile',
@@ -337,7 +379,10 @@ export const TRANSLATIONS: Record<Language, any> = {
       descGCMember: 'Part of a Growth Group?',
       btnRequestAdmin: 'Request Moderator Access',
       statusPending: 'Moderator Request Pending',
-      btnSave: 'Save Changes'
+      btnSave: 'Save Changes',
+      placeholders: {
+        email: 'example@email.com'
+      }
     },
     newsList: {
       title: 'Latest Updates',
@@ -370,6 +415,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       title: 'Kairós',
       subtitle: 'Calendario',
       prayerButton: 'Pedido de Oración',
+      prayerButtonMobile: 'Orar',
       profile: {
         viewer: 'Visualizador',
         editor: 'Editor',
@@ -383,6 +429,7 @@ export const TRANSLATIONS: Record<Language, any> = {
       labelPhone: 'Teléfono',
       labelInsta: 'Instagram',
       labelAddress: 'Dirección',
+      defaultAddress: 'Calle Principal, 123 - Ciudad',
       btnEdit: 'Editar',
       btnSave: 'Guardar',
       btnCancel: 'Cancelar'
@@ -405,7 +452,13 @@ export const TRANSLATIONS: Record<Language, any> = {
       btnContinue: 'Continuar',
       btnRequest: 'Solicitar Acceso',
       footerViewer: 'El modo visualizador no requiere contraseña ni aprobación.',
-      footerAdmin: 'Nuevos correos entrarán automáticamente en cola de aprobación.'
+      footerAdmin: 'Nuevos correos entrarán automáticamente en cola de aprobación.',
+      placeholders: {
+        phone: '090-1234-5678',
+        email: 'nombre@empresa.com',
+        name: 'Nombre Completo',
+        registerPhone: 'Su Celular'
+      }
     },
     calendar: {
       weekDays: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
@@ -445,7 +498,11 @@ export const TRANSLATIONS: Record<Language, any> = {
       formContact: 'Forma de Contacto',
       labelEmail: 'Dirección de E-mail',
       labelPhone: 'Número de Teléfono',
-      btnSend: 'Enviar Pedido'
+      btnSend: 'Enviar Pedido',
+      placeholders: {
+        email: 'su@email.com',
+        phone: 'Ej: 090-1234-5678'
+      }
     },
     profileModal: {
       title: 'Mi Perfil',
@@ -458,7 +515,10 @@ export const TRANSLATIONS: Record<Language, any> = {
       descGCMember: '¿Participa de un Grupo de Crecimiento?',
       btnRequestAdmin: 'Solicitar Acceso de Moderador',
       statusPending: 'Solicitud de Moderador Pendiente',
-      btnSave: 'Guardar Cambios'
+      btnSave: 'Guardar Cambios',
+      placeholders: {
+        email: 'ejemplo@email.com'
+      }
     },
     newsList: {
       title: 'Últimas Actualizaciones',

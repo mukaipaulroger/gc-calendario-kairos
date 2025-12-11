@@ -151,7 +151,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, t, language, setLang
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
-                  placeholder={activeTab === 'viewer' ? "090-1234-5678" : "seu.nome@empresa.com"}
+                  placeholder={activeTab === 'viewer' ? t('login.placeholders.phone') : t('login.placeholders.email')}
                 />
               </div>
             </div>
@@ -216,7 +216,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, t, language, setLang
                                    value={name}
                                    onChange={e => setName(e.target.value)}
                                    className="block w-full pl-10 pr-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 focus:ring-2 focus:ring-yellow-500 outline-none"
-                                   placeholder="Nome Completo"
+                                   placeholder={t('login.placeholders.name')}
                                />
                            </div>
                        </div>
@@ -233,7 +233,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, t, language, setLang
                                    value={phone}
                                    onChange={e => setPhone(e.target.value)}
                                    className="block w-full pl-10 pr-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-gray-100 focus:ring-2 focus:ring-yellow-500 outline-none"
-                                   placeholder="Seu Celular"
+                                   placeholder={t('login.placeholders.registerPhone')}
                                />
                            </div>
                        </div>

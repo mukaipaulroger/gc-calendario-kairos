@@ -276,7 +276,7 @@ const App: React.FC = () => {
             >
                <Heart className="fill-white" size={20} />
                <span className="ml-2 font-bold whitespace-nowrap hidden sm:inline">{t('app.prayerButton')}</span>
-               <span className="ml-2 font-bold whitespace-nowrap sm:hidden">Oração</span>
+               <span className="ml-2 font-bold whitespace-nowrap sm:hidden">{t('app.prayerButtonMobile')}</span>
             </Button>
 
             {/* Moderator Panel (If Admin/Editor) */}
