@@ -13,7 +13,7 @@ interface CalendarGridProps {
   users: User[];
   onDateClick: (date: Date) => void;
   userRole: UserRole;
-  t: (key: string) => string;
+  t: (key: string) => any;
   locale: Locale;
 }
 
@@ -27,7 +27,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({ currentDate, events, users,
 
   const days = eachDayOfInterval({ start: startDate, end: endDate });
 
-  const weekDayLabels = t('calendar.weekDays') as unknown as string[];
+  const weekDayLabels = t('calendar.weekDays') as string[];
   
   const weekDays = [
     { label: weekDayLabels[0], color: 'bg-red-900/80 text-white border-red-800' },

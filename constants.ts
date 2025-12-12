@@ -49,7 +49,7 @@ export const USERS: User[] = [
     phone: '090-1234-5678',
     role: 'viewer',
     status: 'approved',
-    avatarUrl: 'https://picsum.photos/id/111/100/100',
+    avatarUrl: '', // Removido para testar iniciais
     isGCMember: false,
     city: 'Campinas',
     age: '20',

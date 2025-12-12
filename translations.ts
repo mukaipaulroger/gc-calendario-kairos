@@ -98,7 +98,7 @@ export const TRANSLATIONS: Record<Language, any> = {
     },
     profileModal: {
       title: 'Meu Perfil',
-      changePhoto: 'Toque no ícone para gerar uma nova foto',
+      changePhoto: 'Toque para carregar uma foto',
       labelName: 'Nome',
       labelEmail: 'E-mail',
       labelAge: 'Idade',
@@ -234,7 +234,7 @@ export const TRANSLATIONS: Record<Language, any> = {
     },
     profileModal: {
       title: 'プロフィール',
-      changePhoto: 'アイコンをタップして新しい写真を生成',
+      changePhoto: 'タップして写真をアップロード',
       labelName: '名前',
       labelEmail: 'Eメール',
       labelAge: '年齢',
@@ -370,7 +370,7 @@ export const TRANSLATIONS: Record<Language, any> = {
     },
     profileModal: {
       title: 'My Profile',
-      changePhoto: 'Tap icon to generate new photo',
+      changePhoto: 'Tap to upload a photo',
       labelName: 'Name',
       labelEmail: 'E-mail',
       labelAge: 'Age',
@@ -506,7 +506,7 @@ export const TRANSLATIONS: Record<Language, any> = {
     },
     profileModal: {
       title: 'Mi Perfil',
-      changePhoto: 'Toque el icono para generar nueva foto',
+      changePhoto: 'Toque para cargar una foto',
       labelName: 'Nombre',
       labelEmail: 'E-mail',
       labelAge: 'Edad',

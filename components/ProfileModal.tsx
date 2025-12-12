@@ -1,9 +1,9 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User, UserRole } from '../types';
 import Button from './Button';
 import Avatar from './Avatar';
-import { X, User as UserIcon, MapPin, Calendar, RefreshCw, CheckCircle, Shield, Mail } from 'lucide-react';
+import { X, User as UserIcon, MapPin, Calendar, Camera, CheckCircle, Shield, Mail } from 'lucide-react';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -21,6 +21,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, currentUse
   const [city, setCity] = useState('');
   const [isGCMember, setIsGCMember] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  
+  // Ref for file input
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (currentUser) {
@@ -47,12 +50,26 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, currentUse
     setIsEditing(false);
   };
 
-  const handleGenerateAvatar = () => {
-    const randomId = Math.floor(Math.random() * 1000);
-    onSave({
-      ...currentUser,
-      avatarUrl: `https://picsum.photos/seed/${randomId}/200/200`
-    });
+  const handleAvatarClick = () => {
+    // Trigger the hidden file input
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          // Immediately save/update the avatar when a file is chosen
+          onSave({
+            ...currentUser,
+            avatarUrl: reader.result
+          });
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -72,10 +89,19 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, currentUse
            
            {/* Avatar Section */}
            <div className="flex flex-col items-center mb-6">
-              <div className="relative group cursor-pointer" onClick={handleGenerateAvatar}>
+              {/* Hidden File Input */}
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileChange} 
+                className="hidden" 
+                accept="image/*"
+              />
+
+              <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
                 <Avatar src={currentUser.avatarUrl} alt={currentUser.name} size="xl" className="ring-4 ring-gray-700 group-hover:ring-yellow-500 transition-all" />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                   <RefreshCw className="text-white" size={24} />
+                   <Camera className="text-white" size={24} />
                 </div>
               </div>
               <p className="text-xs text-gray-500 mt-2">{t('profileModal.changePhoto')}</p>
@@ -235,7 +261,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, currentUse
                     <div className="border-t border-gray-700 pt-4 mt-2">
                         {currentUser.requestedRole === 'admin' || currentUser.status === 'pending' ? (
                             <div className="bg-yellow-900/10 border border-yellow-600/30 p-3 rounded-lg flex items-center gap-3">
-                                <RefreshCw className="text-yellow-500 animate-spin" size={20} />
+                                <Shield className="text-yellow-500 animate-pulse" size={20} />
                                 <p className="text-sm text-yellow-500 font-medium">{t('profileModal.statusPending')}</p>
                             </div>
                         ) : (

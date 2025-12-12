@@ -1,14 +1,19 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Instagram, MapPin, Edit2, Save, X } from 'lucide-react';
+import { Language } from '../types';
 
 interface ContactInfoBoxProps {
   isAdmin: boolean;
   t: (key: string) => string;
+  language: Language;
 }
 
-const ContactInfoBox: React.FC<ContactInfoBoxProps> = ({ isAdmin, t }) => {
+const ContactInfoBox: React.FC<ContactInfoBoxProps> = ({ isAdmin, t, language }) => {
   const [isEditing, setIsEditing] = useState(false);
+  // Track if user has manually edited the address to prevent overwriting with translation
+  const [hasEditedAddress, setHasEditedAddress] = useState(false);
+  
   const [info, setInfo] = useState({
     email: 'contato@kairos.com',
     phone: '090-1234-5678',
@@ -18,7 +23,19 @@ const ContactInfoBox: React.FC<ContactInfoBoxProps> = ({ isAdmin, t }) => {
 
   const [editForm, setEditForm] = useState(info);
 
+  // Update address when language changes, if not manually edited
+  useEffect(() => {
+    if (!hasEditedAddress) {
+      const newAddress = t('contactBox.defaultAddress');
+      setInfo(prev => ({ ...prev, address: newAddress }));
+      setEditForm(prev => ({ ...prev, address: newAddress }));
+    }
+  }, [language, hasEditedAddress, t]);
+
   const handleSave = () => {
+    if (editForm.address !== t('contactBox.defaultAddress')) {
+        setHasEditedAddress(true);
+    }
     setInfo(editForm);
     setIsEditing(false);
   };

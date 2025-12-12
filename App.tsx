@@ -113,7 +113,7 @@ const App: React.FC = () => {
             phone: type === 'phone' ? identifier : extraData.phone,
             role: 'viewer', // Inicialmente viewer, aguardando aprovação para admin/editor
             status: 'pending',
-            avatarUrl: `https://picsum.photos/seed/${identifier}/100/100`,
+            avatarUrl: '', // Inicia sem foto para usar iniciais
             loginCount: 0
         };
         setUsers([...users, newUser]);
@@ -130,7 +130,7 @@ const App: React.FC = () => {
             phone: identifier,
             role: 'viewer',
             status: 'approved', // Auto-aprovado para acesso imediato
-            avatarUrl: `https://picsum.photos/seed/${cleanId}/100/100`, // Avatar determinístico
+            avatarUrl: '', // Inicia sem foto para usar iniciais
             loginCount: 1,
             city: 'Novo Registro',
             isGCMember: false
@@ -318,7 +318,7 @@ const App: React.FC = () => {
         <aside className="w-full md:w-80 bg-gray-800/50 border-r border-gray-700 flex flex-col overflow-y-auto order-2 md:order-1 scrollbar-thin scrollbar-thumb-gray-600">
            <div className="p-4 flex-shrink-0 space-y-4">
              <DailyVerse language={language} t={t} />
-             <ContactInfoBox isAdmin={currentUser.role === 'admin'} t={t} />
+             <ContactInfoBox isAdmin={currentUser.role === 'admin'} t={t} language={language} />
            </div>
            <div className="flex-1 p-4 pt-0">
              <NewsList events={events} users={users} t={t} locale={localeMap[language]} />
