@@ -1,7 +1,40 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// ------------------------------------------------------------------
+// CONFIGURAÇÃO DA API KEY (Compatível com Preview e Vite Local)
+// ------------------------------------------------------------------
+const getApiKey = (): string => {
+  // 1. Tenta pegar do ambiente padrão (Preview / Node)
+  if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+    return process.env.API_KEY;
+  }
+
+  // 2. Tenta pegar do ambiente Vite (Local)
+  try {
+    // @ts-ignore - Evita erros de linter se import.meta não for reconhecido no editor atual
+    if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_KEY) {
+       // @ts-ignore
+       return import.meta.env.VITE_API_KEY;
+    }
+  } catch (e) {
+    // Ignora erro
+  }
+
+  return "";
+};
+
+const apiKey = getApiKey();
+
+// Log de verificação (Para depuração - Abra o F12 no navegador)
+if (!apiKey) {
+  console.warn("⚠️ AVISO: API KEY não encontrada!");
+} else {
+  // Mostra apenas os 4 primeiros caracteres por segurança
+  console.log(`✅ API KEY carregada com sucesso (${apiKey.substring(0, 4)}...). IA Pronta.`);
+}
+
+const ai = new GoogleGenAI({ apiKey: apiKey });
 
 // Helper to remove Markdown code blocks (```json ... ```) from the response
 const cleanJson = (text: string): string => {
@@ -9,7 +42,25 @@ const cleanJson = (text: string): string => {
   return text.replace(/^```json\s*/, '').replace(/```$/, '').trim();
 };
 
+// --- NOVA FUNÇÃO: VERIFICAR STATUS DA API ---
+export const checkApiConnection = async (): Promise<boolean> => {
+  if (!apiKey) return false;
+  try {
+    // Faz uma chamada ultra-rápida para testar se a chave é válida
+    await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: 'ping',
+    });
+    return true;
+  } catch (error) {
+    console.error("Erro na verificação da API:", error);
+    return false;
+  }
+};
+
 export const enhanceAnnouncement = async (text: string, type: string, langCode: string = 'pt-BR'): Promise<string> => {
+  if (!apiKey) return text; // Fallback imediato se não tiver chave
+
   try {
     const model = 'gemini-2.5-flash';
     const prompt = `
@@ -40,6 +91,8 @@ export const enhanceAnnouncement = async (text: string, type: string, langCode: 
 };
 
 export const suggestEvents = async (dateContext: string, langCode: string = 'pt-BR'): Promise<{ title: string; description: string }[]> => {
+  if (!apiKey) return [];
+
   try {
       const prompt = `
         Generate 3 fictitious corporate events for the month of ${dateContext}.
@@ -82,6 +135,8 @@ export const suggestEvents = async (dateContext: string, langCode: string = 'pt-
 }
 
 export const translateContent = async (text: string, targetLangCode: string): Promise<string> => {
+  if (!apiKey || !text) return text;
+
   try {
     const prompt = `
       Translate the following text to the language associated with the code "${targetLangCode}".
@@ -103,6 +158,15 @@ export const translateContent = async (text: string, targetLangCode: string): Pr
 };
 
 export const getDailyVerse = async (langCode: string): Promise<{ text: string; reference: string; version: string }> => {
+  if (!apiKey) {
+    // Fallback manual sem IA
+    return { 
+        text: "Sem conexão com IA. Configure a API Key para ver o versículo.", 
+        reference: "Sistema", 
+        version: "Offline" 
+    };
+  }
+
   try {
     const prompt = `
       Select a random, encouraging Bible verse.

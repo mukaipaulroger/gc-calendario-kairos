@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Button from './Button';
-import { Mail, Lock, ArrowRight, Phone, Eye, Shield, User as UserIcon, X } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Phone, Eye, Shield, User as UserIcon, X, Wifi, WifiOff, Loader2 } from 'lucide-react';
 import { Language, User } from '../types';
 import Logo from './Logo';
+import { checkApiConnection } from '../services/geminiService';
 
 interface LoginScreenProps {
   onLogin: (value: string, type: 'email' | 'phone', extraData?: { name: string; phone: string }) => void;
@@ -21,6 +22,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, t, language, setLang
   // Extra fields for Admin Request
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+
+  // API Status State
+  const [apiStatus, setApiStatus] = useState<'checking' | 'connected' | 'error'>('checking');
+
+  useEffect(() => {
+    // Check API connection on mount
+    checkApiConnection().then(isConnected => {
+        setApiStatus(isConnected ? 'connected' : 'error');
+    });
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -169,14 +180,32 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, t, language, setLang
             </Button>
           </form>
 
-          <div className="mt-8 border-t border-gray-800 pt-6">
+          {/* System Status Indicator */}
+          <div className="mt-8 border-t border-gray-800 pt-4 flex items-center justify-between">
             <div className="flex items-start gap-3 text-xs text-gray-500">
                <Lock size={14} className="mt-0.5 flex-shrink-0 text-yellow-600" />
-               <p>
+               <p className="max-w-[150px]">
                  {activeTab === 'viewer' 
                    ? t('login.footerViewer') 
                    : t('login.footerAdmin')}
                </p>
+            </div>
+
+            {/* API Status Badge */}
+            <div className={`flex items-center gap-2 px-2 py-1 rounded-full text-[10px] font-bold border ${
+                apiStatus === 'connected' ? 'bg-green-900/30 border-green-700 text-green-400' :
+                apiStatus === 'error' ? 'bg-red-900/30 border-red-700 text-red-400' :
+                'bg-gray-800 border-gray-600 text-gray-400'
+            }`}>
+                {apiStatus === 'checking' && <Loader2 size={12} className="animate-spin" />}
+                {apiStatus === 'connected' && <Wifi size={12} />}
+                {apiStatus === 'error' && <WifiOff size={12} />}
+                
+                <span>
+                    {apiStatus === 'checking' ? 'Verificando IA...' : 
+                     apiStatus === 'connected' ? 'IA Conectada' : 
+                     'IA Offline'}
+                </span>
             </div>
           </div>
         </div>
