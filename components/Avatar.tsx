@@ -4,13 +4,14 @@ import React, { useState, useEffect } from 'react';
 interface AvatarProps {
   src?: string;
   alt: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   onClick?: () => void;
   selected?: boolean;
 }
 
 const SIZE_MAP = {
+  xs: 'w-5 h-5 text-[9px]',
   sm: 'w-8 h-8 text-[10px]',
   md: 'w-10 h-10 text-sm',
   lg: 'w-14 h-14 text-lg',
@@ -39,7 +40,7 @@ const Avatar: React.FC<AvatarProps> = ({ src, alt, size = 'md', className = '', 
   return (
     <div 
       onClick={onClick}
-      className={`relative inline-flex items-center justify-center rounded-full overflow-hidden border-2 transition-all duration-200 cursor-pointer select-none
+      className={`relative inline-flex items-center justify-center rounded-full overflow-hidden border-2 transition-all duration-200 cursor-pointer select-none leading-none
         ${SIZE_MAP[size]} 
         ${className} 
         ${selected ? 'border-indigo-600 ring-2 ring-indigo-300 scale-110' : 'border-gray-200 hover:border-gray-300'}

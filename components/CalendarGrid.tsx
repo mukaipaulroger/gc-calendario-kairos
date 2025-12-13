@@ -93,7 +93,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({ currentDate, events, users,
                     >
                       {author && (
                         <div className="flex-shrink-0">
-                          <Avatar src={author.avatarUrl} alt={author.name} size="sm" className="w-4 h-4 border-none" />
+                          <Avatar src={author.avatarUrl} alt={author.name} size="xs" className="border-none" />
                         </div>
                       )}
                       <span className="truncate font-medium">{event.title}</span>
